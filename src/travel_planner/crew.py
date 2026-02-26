@@ -170,8 +170,41 @@ class TravelPlannerCrew:
             process = Process.sequential,
             verbose = True,
         )
-    
 
+
+# --execute command --
+def run_travel_crew(inputs: dict) -> str:
+    """
+    Instantiate the crew, kick it off with the given inputs dict,
+    and save the result to a Markdown file.
+    """
+    log.info("=" * 60)
+    log.info(f"[Runner] Destination : {inputs.get('destination')}")
+    log.info(f"[Runner] Dates       : {inputs.get('start_date')} → {inputs.get('end_date')}")
+    log.info(f"[Runner] Days        : {inputs.get('num_days')}")
+    log.info(f"[Runner] Budget      : ${inputs.get('budget_usd')}")
+    log.info(f"[Runner] Preferences : {inputs.get('preferences') or 'None'}")
+    log.info("=" * 60)
+
+    # -- build and run the crew --
+    try:
+        log.info("[Runner] Initialising TravelPlannerCrew...")
+        travel_crew = TravelPlannerCrew()
+
+        log.info("[Runner] Kicking off crew execution...")
+        result = travel_crew.crew().kickoff(inputs=inputs)
+        log.info("[Runner] Crew execution completed.")
+
+    except Exception as e:
+        log.exception(f"[Runner] Crew execution failed: {e}")
+        raise RuntimeError(f"Crew execution error: {e}") from e
     
+    # ---save Markdown output---
+    try:
+        output_path = _save_markdown(inputs, result)
+        return output_path
+    except Exception as e:
+        log.exception(f"[Runner] Failed to save output: {e}")
+        raise RuntimeError(f"Output saving failed: {e}") from e
 
 
