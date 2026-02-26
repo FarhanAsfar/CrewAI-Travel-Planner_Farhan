@@ -34,3 +34,13 @@ def _get_llm() -> LLM:
         api_key=api_key,
         temperature=0.3,
     )
+
+@CrewBase
+class TravelPlannerCrew:
+    agents_config = "config/agents.yaml"
+    tasks_config = "config/tasks.yaml"
+
+    # ---shared tool---
+    def __init__(self):
+        self._search_tool = SerperSearchTool()
+        log.info("[Crew] TravelPlannerCrew initialised.")
