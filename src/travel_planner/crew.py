@@ -159,5 +159,19 @@ class TravelPlannerCrew:
                 self.itinerary_task(),
             ],
         )
+    
+    # ---crew----
+    @crew
+    def crew(self) -> Crew:
+        log.info("[Crew] Assembling crew in sequential process")
+        return Crew(
+            agents = self.agents, # will be auto collected by @CrewBase from @agent methods
+            tasks = self.tasks,
+            process = Process.sequential,
+            verbose = True,
+        )
+    
+
+    
 
 
