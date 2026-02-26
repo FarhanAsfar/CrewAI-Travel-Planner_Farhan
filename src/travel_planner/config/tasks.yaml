@@ -1,17 +1,104 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Research the travel destination: {destination}.
+    Travel period: {start_date} to {end_date} ({num_days} days).
+    Traveller preferences: {preferences}.
 
-reporting_task:
-  description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Use the web_search tool to find:
+    1. Top attractions and must-see sights.
+    2. Local culture, cuisine, and unique experiences.
+    3. Practical tips — visa requirements, local currency, transport options,
+       safety, and expected weather during the travel period.
+    4. Best neighbourhoods or areas to stay in.
+
+    Summarise all findings clearly under distinct sections.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A structured destination overview with the following sections:
+    - Overview
+    - Top Attractions (at least 5)
+    - Local Culture & Food
+    - Practical Tips (visa, currency, safety, weather)
+    - Best Areas to Stay
+
+budget_task:
+  description: >
+    Create a detailed budget breakdown for a {num_days}-day trip to {destination}.
+    Total available budget: ${budget_usd} USD.
+    Travel dates: {start_date} to {end_date}.
+    Traveller preferences: {preferences}.
+
+    Steps:
+    1. Use web_search to find current average prices for:
+       - Mid-range hotel / accommodation per night in {destination}.
+       - Daily food costs (mix of local restaurants and cafes).
+       - Local transport (metro, bus pass, taxi estimates).
+       - Entry fees and activity costs for popular attractions.
+    2. Calculate totals for each category across {num_days} days.
+    3. Check whether the grand total fits within ${budget_usd} USD.
+    4. If over budget, suggest specific areas to reduce spending.
+
+    All amounts must be in USD.
+  expected_output: >
+    A budget breakdown with:
+    - Accommodation: $X/night × {num_days} nights = $TOTAL
+    - Food: $X/day × {num_days} days = $TOTAL
+    - Transport: $TOTAL
+    - Activities: $TOTAL
+    - Grand Total: $TOTAL
+    - Budget Status: Within Budget / Over Budget 
+    - Cost-saving tips (if over budget)
+
+itinerary_task:
+  description: >
+    Design a detailed day-by-day itinerary for a {num_days}-day trip to {destination}.
+    Dates: {start_date} to {end_date}.
+    Total budget: ${budget_usd} USD.
+    Traveller preferences: {preferences}.
+
+    Use the destination research and budget breakdown from previous tasks.
+
+    Requirements:
+    - Cover every day from Day 1 (arrival) to Day {num_days} (departure).
+    - For each day include Morning, Afternoon, and Evening segments with
+      activity descriptions and estimated costs.
+    - Respect typical opening hours — avoid scheduling closed attractions.
+    - Include at least one meal recommendation per day.
+    - Keep daily spending aligned with the budget breakdown.
+    - Day 1 must account for arrival and check-in logistics.
+    - Last day must account for check-out and departure logistics.
+  expected_output: >
+    A complete day-by-day itinerary formatted as:
+
+    **Day N — [Theme or Title]**
+    - Morning: [activity + estimated cost]
+    - Afternoon: [activity + estimated cost]
+    - Evening: [meal/activity + estimated cost]
+    - Estimated Daily Spend: $XX
+
+    Repeated for all {num_days} days.
+
+validation_task:
+  description: >
+    Review the complete travel plan for {destination} ({num_days} days,
+    ${budget_usd} USD budget) using the research, budget, and itinerary
+    outputs from previous tasks.
+
+    Perform the following checks:
+    1. Budget Alignment — Does the itinerary's daily spending match the budget
+       breakdown? Is the grand total within ${budget_usd} USD?
+    2. Scheduling Feasibility — Are daily plans realistic given travel time
+       and typical opening hours?
+    3. Consistency — Do attractions in the itinerary match those researched?
+    4. Assumptions — List all assumptions made (exchange rates, travel times, etc).
+    5. Risk Factors — Flag potential issues such as peak-season crowds, weather,
+       visa processing times, or health advisories.
+
+    Assign a PASS / WARN / FAIL status to each check.
+  expected_output: >
+    A Validation Summary with:
+    - Budget Alignment: PASS/WARN/FAIL — [notes]
+    - Scheduling Feasibility: PASS/WARN/FAIL — [notes]
+    - Consistency Check: PASS/WARN/FAIL — [notes]
+    - Assumptions: [bulleted list]
+    - Risk Factors: [bulleted list]
+    - Overall Verdict: APPROVED  / NEEDS REVISION 
