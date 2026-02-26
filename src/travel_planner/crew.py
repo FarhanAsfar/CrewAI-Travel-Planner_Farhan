@@ -107,4 +107,57 @@ class TravelPlannerCrew:
         )
     
 
+    # ---tasks---
+    @task
+    def research_task(self) -> Task:
+        """Loads description/expected_output from tasks.yaml → research_task."""
+        log.info("[Task] Building research_task")
+        return Task(
+            config = self.tasks_config["research_task"],
+            agent = self.destination_researcher(),
+        )
+    
+    @task
+    def budget_task(self) -> Task:
+        """
+        Loads config from tasks.yaml → budget_task.
+        Context: research_task output is passed forward automatically.
+        """
+        log.info("[Task] Building budget_task")
+        return Task(
+            config = self.tasks_config["budget_task"],
+            agent = self.budget_planner(),
+            context = [self.research_task()],
+        )
+    
+    @task
+    def itinerary_task(self) -> Task:
+        """
+        Loads config from tasks.yaml → itinerary_task.
+        Context: research + budget task outputs.
+        """
+        log.info("[Task] Building itinerary_task")
+        return Task(
+            config = self.tasks_config["itinerary_task"],
+            agent = self.itinerary_designer(),
+            context = [self.research_task(), self.budget_task()],
+        )
+    
+    @task
+    def validation_task(self) -> Task:
+        """
+        Loads config from tasks.yaml → validation_task.
+        Context: all three prior task outputs.
+        """
+        log.info("[Task] Building validation_task")
+        return Task(
+            config = self.tasks_config["validation_task"],
+            agent = self.validation_agent(),
+            context = [
+                self.research_task(),
+                self.budget_task(),
+                self.itinerary_task(),
+            ],
+        )
+
 
