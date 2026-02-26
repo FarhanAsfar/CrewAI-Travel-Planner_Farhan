@@ -55,7 +55,7 @@ class TravelPlannerCrew:
         log.info("[Agent] Building destination_researcher agent")
         return Agent(
             config = self.agents_config["budget_planner"],
-            tools = [self._search_tool]
+            tools = [self._search_tool],
             llm = _get_llm(),
             verbose = True,
             allow_delegation = False,
