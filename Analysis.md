@@ -26,6 +26,7 @@ The destination researcher and budget planner are grounded by Serper search resu
 
 Each run consumes roughly 10,000–20,000 tokens depending on destination complexity and trip length, spread across 6–10 LLM calls. The sequential context chaining means each agent receives all prior outputs, so token count grows with each task. This is logged after every run via `result.token_usage` and printed to console and the log file.
 
+<img width="477" height="183" alt="token_usage" src="https://github.com/user-attachments/assets/a55fceb3-9aab-41dd-ad4e-1e99397c4a51" />
 
 ---
 
