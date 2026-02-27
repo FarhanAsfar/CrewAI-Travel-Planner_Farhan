@@ -25,8 +25,62 @@ The planner uses **4 specialised AI agents** that work sequentially, each passin
 
 ---
 
+## Run the Project With Only One Command
+**What You Need: An api key from https://serper.dev/api-keys, the LLM Model name and the API_KEY.**
 
-## ✅ Prerequisites
+**1. Clone the Project**
+```bash
+git clone <your-repository-url>
+cd CrewAI-Travel-Planner
+```
+
+**2. Then create a .env file and add the LLM MODEL and API_KEYS**
+Example:
+```ini
+MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
+GROQ_API_KEY=gsk_95PDP7Agkwrsf------b3FYNSrgNtsabEPu8ipKM0hdWbPz
+SERPER_API_KEY=295c2-------87790b833cd6d9f151eea117
+```
+
+**You also need to add your LLM Model in `crew.py` file**
+```python
+def _get_llm() -> LLM:
+    """
+    CrewAI LLM pointed at Groq via LiteLLM.
+    """
+    api_key = os.getenv("GROQ_API_KEY", "")
+    if not api_key:
+        log.error("GROQ_API_KEY is not set.")
+        raise EnvironmentError(
+            "GROQ_API_KEY is missing. Add it to the .env file"
+        )
+    return LLM(
+        model="groq/meta-llama/llama-4-scout-17b-16e-instruct",
+        api_key=api_key,
+        temperature=0.3,
+    )
+```
+**Add your model name here:**
+```
+model="groq/meta-llama/llama-4-scout-17b-16e-instruct",
+```
+**3. Then run the following command in the terminal:**
+```bash
+./run.sh
+```
+**You should see the project running and asking for user input**
+
+<img width="731" height="251" alt="run" src="https://github.com/user-attachments/assets/c76da812-3771-47d9-a5ff-3226508cadf3" />
+
+---
+
+> **You may see an error saying `litellm[proxy]` is not installed, you can ignore this error as the project runs successfully without it.**
+
+---
+
+## Project Installation in the Typical Manner:
+
+##E ✅ Prerequisites
 
 Before you begin, make sure you have the following installed on your system.
 
@@ -52,47 +106,8 @@ crewai --version
 
 > **Note:** CrewAI uses `uv` internally to manage the project virtual environment. It will be installed automatically when you run `crewai install`.
 
----
 
-## 🔑 API Keys Setup
-
-This project requires two API keys. Both have free tiers.
-
-### 1. Groq API Key (LLM)
-
-1. Go to [console.groq.com](https://console.groq.com)
-2. Sign up or log in
-3. Navigate to **API Keys** in the sidebar
-4. Click **Create API Key**
-5. Copy the key — you will only see it once
-
-### 2. Serper Dev API Key (Web Search)
-
-1. Go to [serper.dev](https://serper.dev)
-2. Sign up or log in
-3. Your API key is shown on the dashboard
-4. Copy the key
-
-### 3. Add Keys to `.env`
-
-In the project root, copy the example file:
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in your keys:
-
-```ini
-GROQ_API_KEY=your_actual_groq_key_here
-SERPER_API_KEY=your_actual_serper_key_here
-```
-
-> ⚠️ **Never commit your `.env` file.** It is already listed in `.gitignore`.
-
----
-
-## 🛠️ Installation
+##  Installation
 
 ### Step 1 — Clone the repository
 
@@ -101,32 +116,33 @@ git clone <your-repository-url>
 cd CrewAI-Travel-Planner
 ```
 
-### Step 2 — Install dependencies
+### Step 2 - Create a .env file in the project root and add your api keys and llm model name:
+```ini
+MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
+GROQ_API_KEY=gsk_95PDP7Agkwrsf------b3FYNSrgNtsabEPu8ipKM0hdWbPz
+SERPER_API_KEY=295c2-------87790b833cd6d9f151eea117
+```
+**Also update the model name in the `crew.py` file:**
+```
+model="groq/meta-llama/llama-4-scout-17b-16e-instruct",
+```
+
+### Step 3 — Install dependencies
 
 ```bash
 crewai install
 ```
 
-This command:
-- Creates a `.venv/` virtual environment inside the project
-- Installs all dependencies listed in `pyproject.toml`
-- Uses `uv.lock` to ensure exact version matches
-
-> This may take 1–2 minutes on first run.
-
-### Step 3 — Verify installation
-
-```bash
-source .venv/bin/activate
-python3 -c "import crewai; print('CrewAI OK')"
-python3 -c "import litellm; print('LiteLLM OK')"
+### Step 4 - Run the following command in your terminal
 ```
-
-Both should print without errors.
+crewai run
+```
+**You should see the project running and asking for user input**
 
 ---
 
-## ▶️ Running the Project
+
+## Running the Project
 
 ### Run the planner
 
@@ -138,7 +154,7 @@ You will be prompted to enter your trip details:
 
 ```
 ═══════════════════════════════════════════════════════
-  🌍  AI Travel Planner — CrewAI + Groq + Serper
+    AI Travel Planner 
 ═══════════════════════════════════════════════════════
 
 Destination (city / country): Tokyo, Japan
