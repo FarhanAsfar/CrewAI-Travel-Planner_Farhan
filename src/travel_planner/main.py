@@ -1,88 +1,68 @@
 import sys
+import os
 import warnings
 
-from datetime import datetime
+from datetime import datetime, date 
 
-from travel_planner.crew import TravelPlanner
+try:
+    fronm dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+from travel_planner.crew import run_travel_crew
+from travel_planner.logger import get_logger
+
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-def run():
-    """
-    Run the crew.
-    """
-    inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
-    }
+log = get_logger("main")
 
-    try:
-        TravelPlanner().crew().kickoff(inputs=inputs)
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
+# --api key check--
+def _check_env() -> bool:
+    """Check env variables. Log any error and return true if all ok"""
+    ok = True
+    for var in ("GROQ_API_KEY", "SERPER_API_KEY"):
+        if not os.getenv(var):
+            log.error(f"[Env] Missing: {var}")
+            print(f" {var} is not set. Add it to your .env file")
+            ok = False
+    return ok
 
 
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
-    }
-    try:
-        TravelPlanner().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
+# --input prompts--
 
-    except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")
+def _prompt(label: str, required: bool = True) -> str:
+    """Prompt a string if required field is empty"""
+    while True:
+        value = input(label).strip()
+        if value or not required:
+            return value
+        print("This field is required!")
 
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        TravelPlanner().crew().replay(task_id=sys.argv[1])
+def _prompt_date(label: str) -> date:
+    """Prompt for a valid date: YYYY-MM-DD"""
+    while True:
+        raw = _prompt(label)
+        try:
+            return datetime.strptime(raw, "%y-%m-%d").date()
+        except ValueError:
+            print("Use format YYYY-MM-DD (e.g. 2025-06-15).")
 
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
+def _prompt_budget() -> float: 
+    """Prompt for a positive number"""
+    while True:
+        raw = _prompt("Total budget in USD (e.g. 2000)")
+        try:
+            val = float(raw.replace(",", ""))
+            if val <= 0:
+                raise ValueError
+            return val
+        except ValueError:
+            print("Enter a positive nuber (e.g. 15000).")
 
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
-    }
 
-    try:
-        TravelPlanner().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
 
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")
 
-def run_with_trigger():
-    """
-    Run the crew with trigger payload.
-    """
-    import json
 
-    if len(sys.argv) < 2:
-        raise Exception("No trigger payload provided. Please provide JSON payload as argument.")
 
-    try:
-        trigger_payload = json.loads(sys.argv[1])
-    except json.JSONDecodeError:
-        raise Exception("Invalid JSON payload provided as argument")
-
-    inputs = {
-        "crewai_trigger_payload": trigger_payload,
-        "topic": "",
-        "current_year": ""
-    }
-
-    try:
-        result = TravelPlanner().crew().kickoff(inputs=inputs)
-        return result
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew with trigger: {e}")
