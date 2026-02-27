@@ -237,12 +237,12 @@ def _save_markdown(inputs: dict, crew_result: Any) -> str:
 
 | Field        | Details                                      |
 |--------------|----------------------------------------------|
-| Destination  | {destination}                                |
-| Start Date   | {inputs.get('start_date')}                   |
-| End Date     | {inputs.get('end_date')}                     |
-| Duration     | {inputs.get('num_days')} days                |
-| Budget       | ${float(inputs.get('budget_usd', 0)):,.2f} USD |
-| Preferences  | {inputs.get('preferences') or 'None'}        |
+| Destination  | {destination}                                
+| Start Date   | {inputs.get('start_date')}                   
+| End Date     | {inputs.get('end_date')}                     
+| Duration     | {inputs.get('num_days')} days                
+| Budget       | ${float(inputs.get('budget_usd', 0)):,.2f} USD 
+| Preferences  | {inputs.get('preferences') or 'None'}        
 
 ---
 
