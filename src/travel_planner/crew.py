@@ -170,6 +170,44 @@ class TravelPlannerCrew:
             process = Process.sequential,
             verbose = True,
         )
+    
+# Token Usage Logger
+def _log_token_usage(result: Any) -> None:
+    """
+    Extract and log token usage from the crew result.
+    """
+    try:
+        usage = getattr(result, "token_usage", None)
+
+        if not usage:
+            log.warning("[Tokens] No token usage data available in result.")
+            return
+
+        # Extract fields — CrewAI returns a UsageMetrics object
+        prompt_tokens     = getattr(usage, "prompt_tokens", 0)
+        completion_tokens = getattr(usage, "completion_tokens", 0)
+        total_tokens      = getattr(usage, "total_tokens", 0)
+        successful_calls  = getattr(usage, "successful_requests", 0)
+
+        log.debug(f"[Tokens] prompt_tokens     : {prompt_tokens}")
+        log.debug(f"[Tokens] completion_tokens : {completion_tokens}")
+        log.debug(f"[Tokens] total_tokens      : {total_tokens}")
+        log.debug(f"[Tokens] successful_calls  : {successful_calls}")
+
+        summary = (
+            f"\n   Token Usage Summary\n"
+            f"  {'─' * 35}\n"
+            f"  Prompt tokens     : {prompt_tokens:,}\n"
+            f"  Completion tokens : {completion_tokens:,}\n"
+            f"  Total tokens      : {total_tokens:,}\n"
+            f"  LLM calls made    : {successful_calls}\n"
+            f"  {'─' * 35}"
+        )
+        log.info(summary)
+        print(summary)
+
+    except Exception as e:
+        log.warning(f"[Tokens] Could not read token usage: {e}")
 
 
 # --execute command --
@@ -194,6 +232,8 @@ def run_travel_crew(inputs: dict) -> str:
         log.info("[Runner] Kicking off crew execution...")
         result = travel_crew.crew().kickoff(inputs=inputs)
         log.info("[Runner] Crew execution completed.")
+
+        _log_token_usage(result) #log token usage
 
     except Exception as e:
         log.exception(f"[Runner] Crew execution failed: {e}")
