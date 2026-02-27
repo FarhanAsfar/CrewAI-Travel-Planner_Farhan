@@ -48,6 +48,23 @@ budget_task:
     - Budget Status: Within Budget / Over Budget 
     - Cost-saving tips (if over budget)
 
+    Provide ONLY the final budget breakdown. No thinking steps, no "Step 1", 
+    no explanations of what you are about to do. Just the result in this exact format:
+
+    ## Budget Breakdown
+
+    | Category      | Amount per unit | Units | Total |
+    |---------------|-----------------|-------|-------|
+    | Accommodation | $X per night    | X nights | $X  |
+    | Food          | $X per day      | X days   | $X  |
+    | Transport     |                 |          | $X  |
+    | Activities    |                 |          | $X  |
+    | **Total**     |                 |          | $X  |
+
+    **Budget Status:** Within Budget ✅ / Over Budget ⚠️ (Budget: $X, Spent: $X)
+
+    **Cost-saving tips:** (only if over budget)
+
 itinerary_task:
   description: >
     Design a detailed day-by-day itinerary for a {num_days}-day trip to {destination}.
