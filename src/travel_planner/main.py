@@ -62,7 +62,40 @@ def _prompt_budget() -> float:
             print("Enter a positive nuber (e.g. 15000).")
 
 
+def _collect_inputs() -> dict:
+    """Collect all the trip details from the user"""
 
+    print("\n" + "═" * 55)
+    print(" AI Travel Planner ")
+    print("═" * 55 + "\n")
 
+    destination = _prompt("Destination (city / country):")
 
+    # date validation loop
+    while True: 
+        start_date = _prompt_date("Start Date (YYYY-MM-DD): ")
+        end_date = _prompt_date("End Date (YYYY-MM-DD): ")
+        if end_date > start_date:
+            break
+        print("End date must be after start date. Try again.")
+    
+    budget_usd = _prompt_budget()
+    preferences = _prompt(
+        "Preferences (optional - e.g vegetarian, no crowds): ",
+        required=False
+    )
+
+    num_days = (end_date - start_date).days
+
+    inputs = {
+        "destination": destination,
+        "start_date":  str(start_date),
+        "end_date":    str(end_date),
+        "num_days":    num_days,
+        "budget_usd":  budget_usd,
+        "preferences": preferences or "None",
+    }
+
+    log.info(f"[Input] Collected: {inputs}")
+    return inputs
 
