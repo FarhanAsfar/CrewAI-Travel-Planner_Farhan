@@ -5,7 +5,11 @@ description = "travel-planner using crewAI"
 authors = [{ name = "Farhan Asfar", email = "asfar.farhan21@gmail.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    "crewai[tools]==1.9.3"
+    "crewai[tools]==1.9.3",
+    "fastapi>=0.133.1",
+    "litellm>=1.75.3",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.5",
 ]
 
 [project.scripts]
