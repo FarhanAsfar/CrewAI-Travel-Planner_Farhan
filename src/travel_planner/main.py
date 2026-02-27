@@ -5,7 +5,7 @@ import warnings
 from datetime import datetime, date 
 
 try:
-    fronm dotenv import load_dotenv
+    from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
     pass
@@ -45,14 +45,14 @@ def _prompt_date(label: str) -> date:
     while True:
         raw = _prompt(label)
         try:
-            return datetime.strptime(raw, "%y-%m-%d").date()
+            return datetime.strptime(raw, "%Y-%m-%d").date()
         except ValueError:
-            print("Use format YYYY-MM-DD (e.g. 2025-06-15).")
+            print("!! Use format YYYY-MM-DD (e.g. 2025-06-15).")
 
 def _prompt_budget() -> float: 
     """Prompt for a positive number"""
     while True:
-        raw = _prompt("Total budget in USD (e.g. 2000)")
+        raw = _prompt("Total budget in USD (e.g. 2000): ")
         try:
             val = float(raw.replace(",", ""))
             if val <= 0:
@@ -98,4 +98,76 @@ def _collect_inputs() -> dict:
 
     log.info(f"[Input] Collected: {inputs}")
     return inputs
+
+
+def main() -> None:
+    log.info("[Main] Travel Planner starting")
+
+    # api key check
+    if not _check_env():
+        print("\n Missing API keys. Exiting.\n")
+        sys.exit(1)
+    
+    # collect inputs
+    try:
+        inputs = _collect_inputs()
+    except KeyboardInterrupt:
+        print("\n\n Program Cancelled. \n")
+        log.info("[Main] Cancelled during input.")
+        sys.exit(0)
+    except Exception as e:
+        log.exception (f"[Main] Input error: {e}")
+        print(f"\n Error in collecting inputs: {e}\n")
+        sys.exit(1)
+    
+    # confirm before running
+    print(f"""
+    Trip Summary
+    Destination : {inputs['destination']:<33} 
+    Dates       : {inputs['start_date']} → {inputs['end_date']}
+    Duration    : {inputs['num_days']} days{" " * (31 - len(str(inputs['num_days'])))}
+    Budget      : ${inputs['budget_usd']:,.2f} USD{" " * max(0, 24 - len(f"{inputs['budget_usd']:,.2f}"))}
+    Preferences : {(inputs['preferences'])[:33]:<33}  
+    """)
+
+    if input ("\n Start planning? (y/n): ").strip().lower() not in ("y", "yes", "Y", "Yes", "YES"):
+        print("\n Program cancelled \n")
+        log.info("[Main] User declined to start planning.")
+        sys.exit(0)
+
+    # Run the crew
+    print("\n  Starting AI agents... (this may take a few minutes)\n")
+    log.info("[Main] Handing off to CrewAI pipeline.")
+
+    try:
+        output_path = run_travel_crew(inputs)
+        print("\n" + "═" * 55)
+        print("  Travel plan generated successfully!")
+        print(f"  Saved to: {output_path}")
+        print("═" * 55 + "\n")
+        log.info(f"[Main] Done. Output: {output_path}")
+
+    except RuntimeError as e:
+        print(f"\n  Planning failed: {e}")
+        print("     Check /logs for the full error trace.\n")
+        log.error(f"[Main] Pipeline error: {e}")
+        sys.exit(1)
+
+    except KeyboardInterrupt:
+        print("\n\n  Interrupted during planning.\n")
+        log.warning("[Main] Interrupted during crew execution.")
+        sys.exit(0)
+
+    except Exception as e:
+        log.exception(f"[Main] Unexpected error: {e}")
+        print(f"\n  Unexpected error: {e}")
+        print("     Check /logs for the full error trace.\n")
+        sys.exit(1)
+
+def run():
+    """crewai run"""
+    main()
+
+if __name__ == "__main__":
+    main()
 
