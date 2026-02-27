@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Resolve project root (src/travel_planner/logger.py → ../../.. = project root)
 _PROJECT_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+    os.path.join(os.path.dirname(__file__), "..", "..")
 )
 
 _LOG_DIR = os.path.join(_PROJECT_ROOT, "logs")
