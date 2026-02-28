@@ -35,14 +35,15 @@ cd CrewAI-Travel-Planner
 ```
 
 **2. Then create a .env file and add the LLM MODEL and API_KEYS**
-Example:
+
+**Example:**
 ```ini
 MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
 GROQ_API_KEY=gsk_95PDP7Agkwrsf------b3FYNSrgNtsabEPu8ipKM0hdWbPz
 SERPER_API_KEY=295c2-------87790b833cd6d9f151eea117
 ```
 
-**You also need to add your LLM Model in `crew.py` file**
+**You also need to add your LLM Model in `crew.py` file, `line: 33`**
 ```python
 def _get_llm() -> LLM:
     """
@@ -80,7 +81,7 @@ model="groq/meta-llama/llama-4-scout-17b-16e-instruct",
 
 ## Project Installation in the Typical Manner:
 
-##E ✅ Prerequisites
+## Prerequisites
 
 Before you begin, make sure you have the following installed on your system.
 
@@ -197,19 +198,19 @@ When complete:
 The generated Markdown file in `/output/` will look like:
 
 ```
-# ✈️ Travel Plan: Tokyo, Japan
+#  Travel Plan: Tokyo, Japan
 
-## 📋 Trip Overview
+##  Trip Overview
 | Field       | Details       |
 |-------------|---------------|
 | Destination | Tokyo, Japan  |
 | Duration    | 7 days        |
 | Budget      | $3,000.00 USD |
 
-## 🗺️ Destination Research
+##  Destination Research
 Top attractions, local culture, practical tips, best areas to stay...
 
-## 💰 Budget Breakdown
+##  Budget Breakdown
 | Category      | Cost      |
 |---------------|-----------|
 | Accommodation | $840.00   |
@@ -234,7 +235,7 @@ Day 1 — Arrival & Shinjuku
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 User Input (CLI)
@@ -260,7 +261,7 @@ Each task passes its output as context to the next task — no information is lo
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 CrewAI-Travel-Planner/
@@ -359,7 +360,7 @@ crewai run
 
 ---
 
-## 📦 Dependencies
+##  Dependencies
 
 | Package | Purpose |
 |---|---|
