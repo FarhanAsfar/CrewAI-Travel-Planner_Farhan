@@ -267,13 +267,37 @@ def _save_markdown(inputs: dict, crew_result: Any) -> str:
     filename  = f"travel_plan_{safe_dest}_{timestamp}.md"
     filepath  = os.path.join(_OUTPUT_DIR, filename)
 
+    # checking if the travel duration is in the past
+    try:
+        trip_start  = datetime.strptime(inputs.get("start_date", ""), "%Y-%m-%d").date()
+        today       = datetime.now().date()
+        is_past     = trip_start < today
+    except ValueError:
+        is_past     = False
+
+    past_date_banner = ""
+    if is_past:
+        log.warning(
+            f"[Output] Trip start date {inputs.get('start_date')} is in the past. "
+            "Adding past-date notice to output file."
+        )
+        past_date_banner = f"""> [!WARNING]
+> ⚠️ **You are viewing a travel plan for a past date.**
+> The trip start date **{inputs.get('start_date')}** has already passed.
+> Prices, attractions, and availability may no longer be accurate.
+> Please re-run the planner with future dates for up-to-date information.
+
+---
+
+"""
+
     md = f"""# Travel Plan: {destination}
 
 > **Generated:** {datetime.now().strftime('%d %B %Y, %H:%M')}
 
 ---
 
-## 📋 Trip Overview
+{past_date_banner}## 📋 Trip Overview
 
 | Field        | Details                                      |
 |--------------|----------------------------------------------|
